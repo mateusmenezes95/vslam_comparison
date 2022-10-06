@@ -4,7 +4,13 @@ This comparison is part of a localization robotic course at the Universidade Fed
 
 [A Comparison of Modern General-Purpose Visual SLAM Approaches]: https://ieeexplore.ieee.org/document/9636615
 
-## Usage
+- [VSLAM Comparison](#vslam-comparison)
+  - [Configuring the docker environment](#configuring-the-docker-environment)
+  - [Installing ROS and Gazebo](#installing-ros-and-gazebo)
+    - [Testing communication between host and container](#testing-communication-between-host-and-container)
+    - [Testing Gazebo](#testing-gazebo)
+
+## Configuring the docker environment
 
 First of all, clone this repository into your machine
 
@@ -86,3 +92,62 @@ mateus_docker@dell:~$ rosrun roscpp_tutorials listener
 ```
 
 To kill the nodes press `ctrl+c` to the `talker`, `listener`, and `roscore` terminals.
+
+## Installing ROS and Gazebo
+
+Although there is a docker image to containerize ROS processes, Gazebo should be installed on your host machine to avoid problems with using graphical resources. It is preferable to install the full version of [ROS Noetic] to avoid problems with `gazebo_ros_pkgs` dependencies.
+
+To install both metapackages, just run
+
+```console
+sudo apt install ros-noetic-desktop-full
+```
+
+Now, put the ROS Noetic `setup.bash` script in your `bashrc` file to load the ROS environment variables for each new terminal opening
+
+```
+echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc & source ~/.bashrc
+```
+
+> **Note:** Use alias instead if you have multiple ROS workspaces or ROS1 **and** ROS2 versions on the same computer!
+
+### Testing communication between host and container
+
+Open a terminal in your **Host** machine and run the ROS master process
+
+```
+roscore
+```
+
+Now, in a **new terminal**, execute the `listener` node of the `roscpp_tutorial` package
+
+```
+rosrun roscpp_tutorial listener
+```
+
+Open **more one terminal** and run the `talker` node on the docker container executing first the [`.run-container.sh`](docker/run-container.sh)
+
+```
+./run-container.sh
+```
+
+and thus the node
+
+```
+rosrun roscpp_tutorial talker
+```
+
+If everything is ok, you will see `ROS INFO` messages like the section above.
+
+### Testing Gazebo
+
+To see Gazebo running, run
+
+```
+roslaunch gazebo_ros empty_world.launch
+```
+
+and an empty Gazebo world has to appear
+
+<!-- Links -->
+[ROS Noetic]: http://wiki.ros.org/noetic
