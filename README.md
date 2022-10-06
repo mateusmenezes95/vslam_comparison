@@ -16,9 +16,9 @@ First of all, clone this repository into your machine
 
 ```console
 git clone https://github.com/mateusmenezes95/vslam_comparison.git
-``` 
+```
 
-As you see, it was created a [Dockerfile](/docker/Dockerfile) and bash scripts to ease the replication of the comparison through a simulation using ROS Noetic and Gazebo 11. To setup the docker container, follow the next instructions.
+As you see, it was created a [Dockerfile](/docker/Dockerfile) and bash scripts to ease the replication of the comparison through a simulation using ROS Noetic and Gazebo 11. To set up the docker container, follow the next instructions.
 
 Go into the folder [`docker`](/docker/) containing bash scripts and the Dockerfile
 
