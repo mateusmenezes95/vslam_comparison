@@ -14,7 +14,7 @@ This comparison is part of a localization robotic course at the Universidade Fed
 
 First of all, clone this repository into your machine
 
-```console
+```
 git clone https://github.com/mateusmenezes95/vslam_comparison.git
 ```
 
@@ -22,37 +22,37 @@ As you see, it was created a [Dockerfile](/docker/Dockerfile) and bash scripts t
 
 Go into the folder [`docker`](/docker/) containing bash scripts and the Dockerfile
 
-```console
+```
 cd docker/
 ```
 
 Now run, which will build a docker image of ROS Noetic
 
-```console
+```
 ./build_image.sh
 ```
 
 After the build phase, just run the container
 
-```console
+```
 ./run-container.sh
 ```
 
 To see if is everything ok, in the terminal launched, run
 
-```console
+```
 roscore
 ```
 
 Execute the `./run-container.sh` in a **new** terminal to launch a **new** terminal inside the same container launched a priori. Then, run the `listener` node. Nothing will happen until you launch the `talker` node
 
-```console
+```
 rosrun roscpp_tutorials listener
 ```
 
 To launch the `talker` node, again in a new terminal repeating the execution of `./run-container.sh`, run
 
-```console
+```
 rosrun roscpp_tutorials talker
 ```
 
@@ -60,7 +60,7 @@ You must see something like
 
 - From the `talker` node:
 
-```console
+```
 mateus_docker@dell:~$ rosrun roscpp_tutorials talker 
 [ INFO] [1664851703.004928103]: hello world 0
 [ INFO] [1664851703.105062777]: hello world 1
@@ -78,7 +78,7 @@ mateus_docker@dell:~$ rosrun roscpp_tutorials talker
 
 - From the `listener` node:
 
-```console
+```
 mateus_docker@dell:~$ rosrun roscpp_tutorials listener
 [ INFO] [1664851703.305901909]: I heard: [hello world 3]
 [ INFO] [1664851703.405803441]: I heard: [hello world 4]
@@ -99,7 +99,7 @@ Although there is a docker image to containerize ROS processes, Gazebo should be
 
 To install both metapackages, just run
 
-```console
+```
 sudo apt install ros-noetic-desktop-full
 ```
 
