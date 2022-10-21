@@ -13,26 +13,6 @@ if [ ! -d "${PROJECT_PATH}" ]; then
     fi
 fi
 
-if [ ! -d "${PROJECT_PATH}/.ssh" ]; then
-    if [ ! -d "${HOME}/.ssh" ]; then
-        printf "Please, setup ssh keys before running the container\n"
-        exit 1
-    fi
-    cp -R "${HOME}/.ssh" "${PROJECT_PATH}/"
-fi
-
-if [ ! -f "${PROJECT_PATH}/.gitconfig" ]; then
-    if [ ! -f "${HOME}/.gitconfig" ]; then
-        printf "Please, setup git before running the container\n\n"
-        printf "Use: \n"
-        printf "git config --global user.name \"John Doe\"\n"
-        printf "git config --global user.email johndoe@example.com\n"
-
-        exit 1
-    fi
-    cp "${HOME}/.gitconfig" "${PROJECT_PATH}/"
-fi
-
 if [ ! "$(docker ps -q -f name=${IMAGE_NAME}_container)" ]; then
     docker run -it --rm \
         --env="SSH_AUTH_SOCK=$SSH_AUTH_SOCK" \
