@@ -12,7 +12,12 @@ This comparison is part of a localization robotic course at the Universidade Fed
 
 ## Configuring the docker environment
 
-First of all, clone this repository into your machine
+First of all, install the Docker Engine on your computer:
+
+- If don't have NVIDIA GPU, follow the official instructions in [Install Docker Engine on Ubuntu]
+- Otherwise, follow the [instructions on the NVIDIA document's page](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#installing-on-ubuntu-and-debian)
+
+After the Docker Engine installation, clone this repository into your machine
 
 ```
 git clone https://github.com/mateusmenezes95/vslam_comparison.git
@@ -151,3 +156,4 @@ and an empty Gazebo world has to appear
 
 <!-- Links -->
 [ROS Noetic]: http://wiki.ros.org/noetic
+[Install Docker Engine on Ubuntu]: https://docs.docker.com/engine/install/ubuntu/
