@@ -246,7 +246,7 @@ ENV Pangolin_DIR=${CMAKE_INSTALL_PREFIX}/lib/cmake/Pangolin
 # OpenVSLAM
 # WORKDIR $HOME
 RUN set -x && \
-  cd $HOME && \
+  cd /opt && \
   git clone https://github.com/fabianschenk/openvslam-1.git openvslam &&\
   cd openvslam && \
   mkdir -p build && \
@@ -276,6 +276,5 @@ RUN set -x && \
 
 # setup entrypoint
 COPY ./entrypoint.sh /
-
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["bash"]
