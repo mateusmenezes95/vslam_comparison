@@ -244,7 +244,6 @@ RUN set -x && \
 ENV Pangolin_DIR=${CMAKE_INSTALL_PREFIX}/lib/cmake/Pangolin
 
 # OpenVSLAM
-# WORKDIR $HOME
 RUN set -x && \
   cd /opt && \
   git clone https://github.com/fabianschenk/openvslam-1.git openvslam &&\
@@ -273,6 +272,34 @@ RUN set -x && \
     -DBOW_FRAMEWORK=DBoW2 && \
   cd ../ && mkdir -p vocabulary && cd vocabulary && \
   wget https://github.com/m-pilia/openvslam-example/blob/master/third_party/vocab/orb_vocab.dbow2
+
+RUN set -x && \
+  cd /opt && \
+  git clone https://github.com/mateusmenezes95/ORB_SLAM3.git ORB_SLAM3 &&\
+  cd ORB_SLAM3 && \
+  chmod +x build.sh && \
+  ./build.sh
+
+RUN apt-get update && \
+  apt-get install -q -y --no-install-recommends \
+  python-pip && \
+  apt-get -y autoremove && \
+  apt-get clean autoclean && \
+  rm -fr /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/* && \
+  pip install matplotlib
+
+# TODO: Enable ROS installation of ORBSLAM3
+# RUN apt-get update && \
+#   apt-get install -q -y --no-install-recommends \
+#   ros-${ROS_DISTRO}-tf \
+#   ros-${ROS_DISTRO}-cv-bridge && \
+#   apt-get -y autoremove && \
+#   apt-get clean autoclean && \
+#   rm -fr /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
+
+# RUN cd /opt/ORB_SLAM3 && \
+#   sh /opt/ros/${ROS_DISTRO}/setup.sh && \
+#   ./build_ros.sh
 
 # setup entrypoint
 COPY ./entrypoint.sh /
