@@ -2,7 +2,7 @@ UUID="$(id -u)"
 UGID="$(id -g)"
 
 # Change when desirable
-ROS_DISTRO="melodic"
+ROS_DISTRO="noetic"
 USERNAME=${ROS_DISTRO}
 IMAGE_NAME="ros1_${ROS_DISTRO}"
 BASE_IMAGE="ros:${ROS_DISTRO}"

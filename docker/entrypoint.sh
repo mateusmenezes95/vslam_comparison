@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-ROS_DISTRO="melodic"
+ROS_DISTRO="noetic"
 NUM_THREADS=$(($(grep -c processor /proc/cpuinfo)/2))
 
 if [ ! -f "${HOME}/.bashrc" ]; then
@@ -18,19 +18,6 @@ if [ ! -d "${HOME}/ORB_SLAM3" ]; then
     cd ORB_SLAM3 && \
     chmod +x build.sh && \
     bash ./build.sh
-
-    # TODO: Enable ROS installation of ORBSLAM3
-    # RUN apt-get update && \
-    #   apt-get install -q -y --no-install-recommends \
-    #   ros-${ROS_DISTRO}-tf \
-    #   ros-${ROS_DISTRO}-cv-bridge && \
-    #   apt-get -y autoremove && \
-    #   apt-get clean autoclean && \
-    #   rm -fr /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
-
-    # RUN cd /opt/ORB_SLAM3 && \
-    #   sh /opt/ros/${ROS_DISTRO}/setup.sh && \
-    #   ./build_ros.sh
 fi
 
 if [ ! -d "${HOME}/openvslam" ]; then
@@ -61,6 +48,36 @@ if [ ! -d "${HOME}/openvslam" ]; then
   cd ../ && mkdir -p vocabulary && cd vocabulary && \
   wget https://github.com/m-pilia/openvslam-example/blob/master/third_party/vocab/orb_vocab.dbow2
   cd ${HOME}
+fi
+
+CATKIN_WS_DIR="catkin_ws"
+
+function cleanup()
+{
+  # Last command exited with non zero code
+  LAST_COMMAND_EXIT_CODE=$?
+  echo -e "\033[0;31mCatkin workspace creation failed with exit code ${LAST_COMMAND_EXIT_CODE}!\033[0m"
+  if [[ ${LAST_COMMAND_EXIT_CODE} -ne 0 &&  -d "${HOME}/${CATKIN_WS_DIR}" ]]; then
+    echo "Removing ${HOME}/${CATKIN_WS_DIR} folder..."
+    rm -rf ${HOME}/${CATKIN_WS_DIR}
+    echo "Folder ${HOME}/${CATKIN_WS_DIR} removed successfully"
+  fi
+}
+
+trap cleanup EXIT
+
+if [ ! -d "${HOME}/${CATKIN_WS_DIR}" ]; then
+  source /opt/ros/${ROS_DISTRO}/setup.bash
+  mkdir -p ${HOME}/${CATKIN_WS_DIR}/src
+  cd ${CATKIN_WS_DIR}/src
+  git clone https://github.com/thien94/orb_slam3_ros.git
+  cd ../
+  sudo apt-get update
+  rosdep update
+  rosdep install --from-paths src --ignore-src -r -y
+  catkin config --extend /opt/ros/${ROS_DISTRO}
+  catkin build --jobs ${NUM_THREADS}
+  source devel/setup.bash
 fi
 
 export LD_LIBRARY_PATH="${HOME}/ORB_SLAM3/lib"

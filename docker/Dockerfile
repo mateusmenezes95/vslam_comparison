@@ -245,11 +245,13 @@ ENV Pangolin_DIR=${CMAKE_INSTALL_PREFIX}/lib/cmake/Pangolin
 
 RUN apt-get update && \
   apt-get install -q -y --no-install-recommends \
-  python-pip && \
+  python3-catkin-tools \
+  ros-${ROS_DISTRO}-hector-trajectory-server \
+  python3-pip && \
   apt-get -y autoremove && \
   apt-get clean autoclean && \
   rm -fr /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/* && \
-  pip install matplotlib
+  pip3 install matplotlib
 
 # setup entrypoint
 COPY ./entrypoint.sh /
