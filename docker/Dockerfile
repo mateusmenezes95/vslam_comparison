@@ -238,6 +238,7 @@ ENV Pangolin_DIR=${CMAKE_INSTALL_PREFIX}/lib/cmake/Pangolin
 RUN apt-get update && \
   apt-get install -q -y --no-install-recommends \
   python3-catkin-tools \
+  python3-vcstool \
   python3-pip && \
   apt-get -y autoremove && \
   apt-get clean autoclean && \
