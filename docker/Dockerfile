@@ -45,14 +45,6 @@ RUN apt-get update && apt-get install -q -y --no-install-recommends \
     && apt-get clean autoclean \
     && rm -fr /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
 
-# install ros additional packages
-RUN apt-get update && apt-get install -q -y --no-install-recommends \
-    ros-${ROS_DISTRO}-roscpp-tutorials \
-    ros-${ROS_DISTRO}-image-transport \
-    && apt-get -y autoremove \
-    && apt-get clean autoclean \
-    && rm -fr /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
-
 # install OpenVSLAM Dependencies
 # Docker file instructions retrieved from https://github.com/fabianschenk/openvslam-1
 
@@ -246,12 +238,22 @@ ENV Pangolin_DIR=${CMAKE_INSTALL_PREFIX}/lib/cmake/Pangolin
 RUN apt-get update && \
   apt-get install -q -y --no-install-recommends \
   python3-catkin-tools \
-  ros-${ROS_DISTRO}-hector-trajectory-server \
   python3-pip && \
   apt-get -y autoremove && \
   apt-get clean autoclean && \
   rm -fr /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/* && \
   pip3 install matplotlib
+
+# install ros packages dependencies to execute ORB-SLAM3 and OpenVSLAM 
+RUN apt-get update && apt-get install -q -y --no-install-recommends \
+    ros-${ROS_DISTRO}-cv-bridge \
+    ros-${ROS_DISTRO}-hector-trajectory-server \
+    ros-${ROS_DISTRO}-image-transport \
+    ros-${ROS_DISTRO}-roscpp-tutorials \
+    ros-${ROS_DISTRO}-tf2-geometry-msgs \
+    && apt-get -y autoremove \
+    && apt-get clean autoclean \
+    && rm -fr /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
 
 # setup entrypoint
 COPY ./entrypoint.sh /
