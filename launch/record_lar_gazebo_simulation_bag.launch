@@ -1,0 +1,21 @@
+<launch>
+    <arg name="bag_filepath" default="$(env HOME)/bags/lar-gazebo"/>
+    <arg name="bag_filename" default="lar_gazebo"/>
+
+    <arg name="topics_to_record"
+        value="/front/scan
+            /husky_velocity_controller/odom
+            /imu/data /kb_teleop/cmd_vel
+            /odometry/filtered
+            /realsense/color/image_raw
+            /realsense/depth/color/points
+            /realsense/depth/image_rect_raw
+            /realsense/scan
+            /tf
+            /tf_static"
+    />
+
+    <node name="rosbag" pkg="rosbag" type="record" output="screen"
+        args="$(arg topics_to_record) -O $(arg bag_filepath)/$(arg bag_filename)"
+    />
+</launch>
