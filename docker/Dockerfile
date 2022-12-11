@@ -247,10 +247,14 @@ RUN apt-get update && \
 
 # install ros packages dependencies to execute ORB-SLAM3 and OpenVSLAM 
 RUN apt-get update && apt-get install -q -y --no-install-recommends \
+    ros-${ROS_DISTRO}-apriltag-ros \
     ros-${ROS_DISTRO}-cv-bridge \
+    ros-${ROS_DISTRO}-hector-slam \
+    ros-${ROS_DISTRO}-hector-slam-launch \
     ros-${ROS_DISTRO}-hector-trajectory-server \
     ros-${ROS_DISTRO}-image-transport \
     ros-${ROS_DISTRO}-roscpp-tutorials \
+    ros-${ROS_DISTRO}-rviz \
     ros-${ROS_DISTRO}-tf2-geometry-msgs \
     && apt-get -y autoremove \
     && apt-get clean autoclean \
