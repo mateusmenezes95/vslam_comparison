@@ -77,9 +77,10 @@ if [ ! -d "${HOME}/${CATKIN_WS_DIR}" ]; then
   rosdep install --from-paths src --ignore-src -r -y
   catkin config --extend /opt/ros/${ROS_DISTRO}
   catkin build --jobs ${NUM_THREADS}
-  source devel/setup.bash
 fi
 
 export LD_LIBRARY_PATH="${HOME}/ORB_SLAM3/lib"
 
+cd ${HOME}/${CATKIN_WS_DIR}
+source devel/setup.bash
 exec "$@"
