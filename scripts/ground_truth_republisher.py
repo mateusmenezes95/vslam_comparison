@@ -7,17 +7,16 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import TransformStamped
 
 
-def ground_truth_subscriber_callback(data):
+def ground_truth_subscriber_callback(data: Odometry) -> None:
     br = tf2_ros.TransformBroadcaster()
     tf = TransformStamped()
-    rospy.loginfo("I got gt!2")
 
     tf.header.stamp = rospy.Time.now()
     tf.header.frame_id = "map"
     tf.child_frame_id = "ground_truth"
-    tf.transform.translation.x = data.pose.pose.position.z
-    tf.transform.translation.y = data.pose.pose.position.x
-    tf.transform.translation.z = data.pose.pose.position.y
+    tf.transform.translation.x = data.pose.pose.position.x
+    tf.transform.translation.y = data.pose.pose.position.y
+    tf.transform.translation.z = data.pose.pose.position.z - 0.192
     tf.transform.rotation = data.pose.pose.orientation
 
     br.sendTransform(tf)
