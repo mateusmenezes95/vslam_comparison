@@ -21,6 +21,13 @@ catkin_package(
   CATKIN_DEPENDS message_runtime
 )
 
+catkin_install_python(PROGRAMS
+  scripts/ground_truth_republisher.py
+  scripts/vslam_xforward_tf_broadcaster.py
+  scripts/save_path.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 install(
   DIRECTORY launch config
