@@ -1,14 +1,25 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(vslam_comparison)
 
-find_package(catkin REQUIRED COMPONENTS)
+find_package(catkin REQUIRED COMPONENTS
+  rospy
+  std_msgs
+  message_generation
+)
 
-## Uncomment this if the package has a setup.py. This macro ensures
-## modules and global scripts declared therein get installed
-## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-# catkin_python_setup()
+add_service_files(
+  FILES
+  SavePath.srv
+)
 
-catkin_package()
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+
+catkin_package(
+  CATKIN_DEPENDS message_runtime
+)
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 install(
