@@ -4,18 +4,19 @@
 
     <arg name="topics_to_record"
         value="/front/scan
-            /husky_velocity_controller/odom
-            /imu/data /kb_teleop/cmd_vel
+            /imu/data
             /odometry/filtered
             /realsense/color/image_raw
-            /realsense/depth/color/points
             /realsense/depth/image_rect_raw
-            /realsense/scan
             /tf
-            /tf_static"
+            /tf_static
+            /gazebo_ground_truth/odom
+            /joint_states
+            /husky_velocity_controller/cmd_vel
+            /clock"
     />
 
     <node name="rosbag" pkg="rosbag" type="record" output="screen"
-        args="$(arg topics_to_record) -O $(arg bag_filepath)/$(arg bag_filename)"
+        args="--lz4 $(arg topics_to_record) -O $(arg bag_filepath)/$(arg bag_filename)"
     />
 </launch>
