@@ -1,9 +1,11 @@
 <launch>
-  <arg name="update_rate" default="30"/>
-  <arg name="publish_rate" default="30"/>
+  <arg name="update_rate" default="50"/>
+  <arg name="publish_rate" default="50"/>
+  <param name="use_sim_time" value="true" />
 
   <node pkg="vslam_comparison" type="ground_truth_republisher.py" name="ground_truth_tf_broadcaster" output="screen"/> 
-  <node pkg="vslam_comparison" type="vslam_xforward_tf_broadcaster.py" name="vslam_xforward_tf_broadcaster" output="screen"/> 
+  <node pkg="vslam_comparison" type="vslam_xforward_tf_broadcaster.py" name="vslam_xforward_tf_broadcaster" output="screen"/>
+  <node pkg="vslam_comparison" type="save_path.py" name="save_path_node" output="screen"/>
 
   <!-- Generate trajectory paths -->
   <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="vslam_trajectory_server" output="screen" ns="vslam" >
@@ -14,7 +16,7 @@
   </node>
 
   <!-- Generate trajectory paths -->
-  <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="ground_truth_trajectory_server" output="screen" ns="vslam" >
+  <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="ground_truth_trajectory_server" output="screen" ns="ground_truth" >
     <param name="/target_frame_name" value="/map" />
     <param name="/source_frame_name" value="/ground_truth" />
     <param name="/trajectory_update_rate" value="$(arg update_rate)" />
