@@ -1,4 +1,5 @@
 # Modified by Raul Mur-Artal
+# Modified by Mateus Menezes 2022-12-13
 # Automatically compute the optimal scale factor for monocular VO/SLAM.
 
 # Software License Agreement (BSD License)
@@ -45,6 +46,7 @@ import sys
 import numpy
 import argparse
 import associate
+import os
 
 def align(model,data):
     """Align two trajectories using the method of Horn (closed-form).
@@ -143,8 +145,10 @@ if __name__=="__main__":
     parser.add_argument('--save', help='save aligned second trajectory to disk (format: stamp2 x2 y2 z2)')
     parser.add_argument('--save_associations', help='save associated first and aligned second trajectory to disk (format: stamp1 x1 y1 z1 stamp2 x2 y2 z2)')
     parser.add_argument('--plot', help='plot the first and the aligned second trajectory to an image (format: png)')
+    parser.add_argument('--plot_difference', help='plot the difference between first and the aligned second trajectory', action='store_true')
     parser.add_argument('--verbose', help='print all evaluation data (otherwise, only the RMSE absolute translational error in meters after alignment will be printed)', action='store_true')
     parser.add_argument('--verbose2', help='print scale eror and RMSE absolute translational error in meters after alignment with and without scale correction', action='store_true')
+    parser.add_argument('--save_results', help='Save evaluation data')
     args = parser.parse_args()
 
     first_list = associate.read_file_list(args.first_file, False)
@@ -173,25 +177,33 @@ if __name__=="__main__":
     second_xyz_full = numpy.matrix([[float(value)*float(args.scale) for value in second_list[b][0:3]] for b in second_stamps]).transpose()
     second_xyz_full_aligned = scale * rot * second_xyz_full + trans
     
-    if args.verbose:
-        print "compared_pose_pairs %d pairs"%(len(trans_error))
+    compared_pose_pairs = len(trans_error)
+    ate_rmse = numpy.sqrt(numpy.dot(trans_error,trans_error) / len(trans_error))
+    ate_mean = numpy.mean(trans_error)
+    ate_median = numpy.median(trans_error)
+    ate_std = numpy.std(trans_error)
+    ate_min = numpy.min(trans_error)
+    ate_max = numpy.max(trans_error)
 
-        print "absolute_translational_error.rmse %f m"%numpy.sqrt(numpy.dot(trans_error,trans_error) / len(trans_error))
-        print "absolute_translational_error.mean %f m"%numpy.mean(trans_error)
-        print "absolute_translational_error.median %f m"%numpy.median(trans_error)
-        print "absolute_translational_error.std %f m"%numpy.std(trans_error)
-        print "absolute_translational_error.min %f m"%numpy.min(trans_error)
-        print "absolute_translational_error.max %f m"%numpy.max(trans_error)
-        print "max idx: %i" %numpy.argmax(trans_error)
+    if args.verbose:
+        print('compared_pose_pairs {0:d} pairs'.format(compared_pose_pairs))
+
+        print('absolute_translational_error.rmse {0:.3f} m'.format(ate_rmse))
+        print('absolute_translational_error.mean {0:.3f} m'.format(ate_mean))
+        print('absolute_translational_error.median {0:.3f} m'.format(ate_median))
+        print('absolute_translational_error.std {0:.3f} m'.format(ate_std))
+        print('absolute_translational_error.min {0:.3f} m'.format(ate_min))
+        print('absolute_translational_error.max {0:.3f} m'.format(ate_max))
+        print('max idx: {0:d}'.format(numpy.argmax(trans_error)))
     else:
         # print "%f, %f " % (numpy.sqrt(numpy.dot(trans_error,trans_error) / len(trans_error)),  scale)
         # print "%f,%f" % (numpy.sqrt(numpy.dot(trans_error,trans_error) / len(trans_error)),  scale)
-        print "%f,%f,%f" % (numpy.sqrt(numpy.dot(trans_error,trans_error) / len(trans_error)), scale, numpy.sqrt(numpy.dot(trans_errorGT,trans_errorGT) / len(trans_errorGT)))
+        print("%f,%f,%f" % (numpy.sqrt(numpy.dot(trans_error,trans_error) / len(trans_error)), scale, numpy.sqrt(numpy.dot(trans_errorGT,trans_errorGT) / len(trans_errorGT))))
         # print "%f" % len(trans_error)
     if args.verbose2:
-        print "compared_pose_pairs %d pairs"%(len(trans_error))
-        print "absolute_translational_error.rmse %f m"%numpy.sqrt(numpy.dot(trans_error,trans_error) / len(trans_error))
-        print "absolute_translational_errorGT.rmse %f m"%numpy.sqrt(numpy.dot(trans_errorGT,trans_errorGT) / len(trans_errorGT))
+        print("compared_pose_pairs %d pairs"%(len(trans_error)))
+        print("absolute_translational_error.rmse %f m"%numpy.sqrt(numpy.dot(trans_error,trans_error) / len(trans_error)))
+        print("absolute_translational_errorGT.rmse %f m"%numpy.sqrt(numpy.dot(trans_errorGT,trans_errorGT) / len(trans_errorGT)))
 
     if args.save_associations:
         file = open(args.save_associations,"w")
@@ -213,10 +225,12 @@ if __name__=="__main__":
         ax = fig.add_subplot(111)
         plot_traj(ax,first_stamps,first_xyz_full.transpose().A,'-',"black","ground truth")
         plot_traj(ax,second_stamps,second_xyz_full_aligned.transpose().A,'-',"blue","estimated")
-        label="difference"
-        for (a,b),(x1,y1,z1),(x2,y2,z2) in zip(matches,first_xyz.transpose().A,second_xyz_aligned.transpose().A):
-            ax.plot([x1,x2],[y1,y2],'-',color="red",label=label)
-            label=""
+
+        if args.plot_difference:
+            label="difference"
+            for (a,b),(x1,y1,z1),(x2,y2,z2) in zip(matches,first_xyz.transpose().A,second_xyz_aligned.transpose().A):
+                ax.plot([x1,x2],[y1,y2],'-',color="red",label=label)
+                label=""
             
         ax.legend()
             
@@ -225,5 +239,20 @@ if __name__=="__main__":
         plt.axis('equal')
         plt.savefig(args.plot,format="pdf")
 
-
-        
+    if args.save_results:
+        filepath = args.save_results
+        filepath = filepath + ".csv"
+        with open(filepath, mode='a+') as result_file:
+            if len(result_file.readlines()) == 0:
+                print("File " + str(filepath) + " created!")
+                result_file.write("#trajectory rmse mean median std min max compared_pose_pairs\n")
+            result_file.write(
+                os.path.basename(args.second_file) + ' ' +
+                str(ate_rmse) + ' ' +
+                str(ate_mean) + ' ' +
+                str(ate_median) + ' ' +
+                str(ate_std) + ' ' +
+                str(ate_min) + ' ' +
+                str(ate_max) + ' ' +
+                str(compared_pose_pairs) + '\n'
+            )
