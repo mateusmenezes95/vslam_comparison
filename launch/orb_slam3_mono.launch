@@ -1,8 +1,13 @@
 <launch>
     <param name="use_sim_time" value="false" />
-    <node pkg="tf" type="static_transform_publisher" name="world_to_odom_tf" 
-        args="0 0 0 0 0 0 world odom 50"
+    <arg name="enable_pangolim" default="false"/>
+    <arg name="enable_rviz" default="false"/>
+
+    <node pkg="tf" type="static_transform_publisher" name="map_to_orb_slam_tf" 
+        args="0 0 0 -1.571 0 -1.571 map orb_slam_map 50"
     />
+
+    <arg name="enable_trajectory_servers" default="false"/>
 
     <!-- Main node -->
     <node name="orb_slam3" pkg="orb_slam3_ros" type="ros_mono" output="screen">
@@ -10,23 +15,21 @@
         <remap from="/camera/image_raw"    to="/realsense/color/image_raw"/>
 
         <!-- Parameters for original ORB-SLAM3 -->
-        <param name="voc_file"      type="string" value="$(find orb_slam3_ros)/orb_slam3/Vocabulary/ORBvoc.txt.bin"/>
-        <param name="settings_file" type="string" value="$(find vslam_comparison)/config/gazebo_realsense_d315_model.yaml"/>
+        <param name="voc_file"      type="string"
+            value="$(find orb_slam3_ros)/orb_slam3/Vocabulary/ORBvoc.txt.bin"/>
+        <param name="settings_file" type="string"
+            value="$(find vslam_comparison)/config/gazebo_realsense_d315_model.yaml"/>
 
         <!-- Parameters for ROS -->
-        <param name="world_frame_id"    type="string"   value="world"/>
-        <param name="cam_frame_id"      type="string"   value="camera"/>
-        <param name="enable_pangolin"   type="bool"     value="true"/>
+        <param name="world_frame_id"    type="string"   value="orb_slam_map"/>
+        <param name="cam_frame_id"      type="string"   value="orb_slam_camera"/>
+        <param name="enable_pangolin"   type="bool"     value="$(arg enable_pangolim)"/>
     </node>
     
     <!-- Visualization -->
-    <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find orb_slam3_ros)/config/orb_slam3_no_imu.rviz" output="screen" /> -->
-    
-    <!-- Trajectory path -->
-    <!-- <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="trajectory_server_orb_slam3" output="screen" ns="orb_slam3_ros" >
-        <param name="/target_frame_name" value="world" />
-        <param name="/source_frame_name" value="base_link" />
-        <param name="/trajectory_update_rate" value="30.0" />
-        <param name="/trajectory_publish_rate" value="30.0" />
-    </node> -->
+    <node if="$(arg enable_rviz)" name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find vslam_comparison)/config/orb_slam3_no_imu.rviz" output="screen" />
+
+    <include if="$(arg enable_trajectory_servers)"
+        file="$(find vslam_comparison)/launch/hector_trajectory_servers.launch"/>
 </launch>
