@@ -2,13 +2,31 @@
 
 This comparison is part of a localization robotic course at the Universidade Federal da Bahia (UFBA) master's degree program. The comparison here is intended to minimally mimic the excellent work made by Alexey Merzlyakov and Steve Macenski, who wrote the paper [A Comparison of Modern General-Purpose Visual SLAM Approaches]. It is worth highlighting that this work is not intended to replace the work made by these authors.
 
+The comparison has changed slightly from the original work. This work compared the methods [ORB-SLAM3], [OpenVSLAM] and [Hector SLAM] using data gathered in a Gazebo Simulation.
+
 [A Comparison of Modern General-Purpose Visual SLAM Approaches]: https://ieeexplore.ieee.org/document/9636615
 
 - [VSLAM Comparison](#vslam-comparison)
+  - [Dependencies](#dependencies)
+    - [Packages Dependencies](#packages-dependencies)
+    - [Datasets](#datasets)
   - [Configuring the docker environment](#configuring-the-docker-environment)
   - [Installing ROS and Gazebo](#installing-ros-and-gazebo)
     - [Testing communication between host and container](#testing-communication-between-host-and-container)
     - [Testing Gazebo](#testing-gazebo)
+  - [Usage](#usage)
+    - [ORB-SLAM3 ROS](#orb-slam3-ros)
+    - [Evaluation Scripts](#evaluation-scripts)
+
+## Dependencies
+
+### Packages Dependencies
+
+The [Dockerfile](docker/Dockerfile) provides the dependencies to execute the Visual SLAM methods of the comparison and the installation steps to configure the container are described in the section [Configuring the docker environment](#configuring-the-docker-environment). However, if you want proceed without the docker container, the commands listed in the [Dockerfile](docker/Dockerfile) and [entrypoint.sh](docker/entrypoint.sh) are a good start points to configure the environment in your machine.
+
+### Datasets
+
+The visual SLAM methods were initially tested with two open datasets available: TUM RGB-D and EuroC MAV. However the comparison was executed using ROS bags recorded using the [LAR Gazebo] package, which reproduce the Robotics Laboratory at UFBA. The bags were recorded using the LiDAR Sick LMS1XX and the RGB-D Sensor Realsense D315 assemble on the robot Husky of ClearPath. The bags were generated during three trajectories: Rectangular Trajectory, Figure-Eight Trajectory and, Straight Line Trajectory, sorted ascending by the complexity for the VSLAM methods. More info about the bags in [ROS Bags Content](doc/rosbags_info.md).
 
 ## Configuring the docker environment
 
@@ -154,6 +172,20 @@ roslaunch gazebo_ros empty_world.launch
 
 and an empty Gazebo world has to appear
 
+## Usage
+
+### ORB-SLAM3 ROS
+
+> TODO
+
+### Evaluation Scripts
+
+> TODO
+
 <!-- Links -->
 [ROS Noetic]: http://wiki.ros.org/noetic
 [Install Docker Engine on Ubuntu]: https://docs.docker.com/engine/install/ubuntu/
+[LAR Gazebo]: https://github.com/mateusmenezes95/lar_gazebo
+[ORB-SLAM3]: https://github.com/thien94/orb_slam3_ros
+[OpenVSLAM]: https://github.com/fabianschenk/openvslam-1
+[Hector SLAM]: http://wiki.ros.org/hector_slam
