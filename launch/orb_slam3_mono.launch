@@ -2,12 +2,11 @@
     <param name="use_sim_time" value="false" />
     <arg name="enable_pangolim" default="false"/>
     <arg name="enable_rviz" default="false"/>
+    <arg name="enable_trajectory_servers" default="false"/>
 
     <node pkg="tf" type="static_transform_publisher" name="map_to_orb_slam_tf" 
         args="0 0 0 -1.571 0 -1.571 map orb_slam_map 50"
     />
-
-    <arg name="enable_trajectory_servers" default="false"/>
 
     <!-- Main node -->
     <node name="orb_slam3" pkg="orb_slam3_ros" type="ros_mono" output="screen">

@@ -176,7 +176,31 @@ and an empty Gazebo world has to appear
 
 ### ORB-SLAM3 ROS
 
-> TODO
+The ORB-SLAM3 method performs visual SLAM with three different sources of sensors: Monocular Camera, Depth Cameras (RGBD), and Monocular Camera + IMU. Therefore, this package has three launch files.
+
+The monocular and RGBD launch files have the common arguments `enable_pangolim`, `enable_rviz`, and `enable_trajectory_servers` that are false by default. [Pangolin] is the ROS-independent method of visualization provided by ORB-SLAM3 core, while [RViz] is the standard visualization tool in the ROS community. `enable_trajectory_servers` enables the package `[hector_trajectory_server]` to generate [ROS Paths].
+
+The launch file for monocular + IMU has no arguments and no visualization tool enabled. Because the computational process of this approach is crashing, there wasn't enough time to configure the launch file for this approach.
+
+Therefore, to launch ORB-SLAM3 nodes, execute the following commands.
+
+- ORB-SLAM3 Monocular:
+
+```
+roslaunch vslam_comparison orb_slam3_mono.launch enable_rviz:=true enable_pangolim:=true enable_trajectory_servers:=true
+```
+
+- ORM-SLAM3 RGBD:
+
+```
+roslaunch vslam_comparison orb_slam3_rgbd.launch enable_rviz:=true enable_pangolim:=true enable_trajectory_servers:=true
+```
+
+- ORB-SLAM3 Monocular + IMU:
+
+```
+roslaunch vslam_comparison orb_slam3_mono_inertial.launch
+```
 
 ### Evaluation Scripts
 
@@ -189,3 +213,7 @@ and an empty Gazebo world has to appear
 [ORB-SLAM3]: https://github.com/thien94/orb_slam3_ros
 [OpenVSLAM]: https://github.com/fabianschenk/openvslam-1
 [Hector SLAM]: http://wiki.ros.org/hector_slam
+[Pangolin]: https://github.com/stevenlovegrove/Pangolin
+[hector_trajectory_server]: http://wiki.ros.org/hector_trajectory_server
+[ROS paths]: http://docs.ros.org/en/noetic/api/nav_msgs/html/msg/Path.html
+[RViz]: http://wiki.ros.org/rviz
